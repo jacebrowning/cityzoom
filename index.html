@@ -3,7 +3,9 @@
 <head>
   <title>City Zoom</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-gesture-handling@1.2.1/dist/leaflet-gesture-handling.min.css" />
   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-gesture-handling@1.2.1/dist/leaflet-gesture-handling.min.js"></script>
   <style>
     body, html {
       height: 100%;
@@ -40,7 +42,7 @@
     var detroit_michigan = [42.3314, -83.0458];
 
     var map1 = L.map('map1').setView(grand_rapids_michigan, 13);
-    var map2 = L.map('map2').setView(detroit_michigan, 13);
+    var map2 = L.map('map2', {gestureHandling: true}).setView(detroit_michigan, 13);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
