@@ -3,13 +3,21 @@
   <head>
     <title>City Zoom</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <!-- Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <!-- Gestures -->
     <link
       rel="stylesheet"
       href="https://unpkg.com/leaflet-gesture-handling@1.2.1/dist/leaflet-gesture-handling.min.css"
     />
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-gesture-handling@1.2.1/dist/leaflet-gesture-handling.min.js"></script>
+    <!-- Search -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet-geosearch@3.6.1/dist/geosearch.css"
+    />
+    <script src="https://unpkg.com/leaflet-geosearch@3.6.1/dist/geosearch.umd.js"></script>
     <style>
       body,
       html {
@@ -77,10 +85,10 @@
         history.pushState(null, "", "?" + params.toString());
       }
 
-      // Get URL parameters
+      // Get initial center coordinates and zoom levels
+
       const urlParams = new URLSearchParams(window.location.search);
 
-      // Set initial center coordinates and zoom levels
       const initialCenter1 =
         urlParams.has("lat1") && urlParams.has("lng1")
           ? [parseFloat(urlParams.get("lat1")), parseFloat(urlParams.get("lng1"))]
@@ -95,6 +103,7 @@
       const initialZoom2 = urlParams.has("z2") ? parseInt(urlParams.get("z2")) : 13;
 
       // Initialize the maps
+
       var map1 = L.map("map1").setView(initialCenter1, initialZoom1);
       var map2 = L.map("map2", { gestureHandling: true }).setView(
         initialCenter2,
@@ -114,20 +123,48 @@
           '<a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       }).addTo(map2);
 
+      // Enable search
+
+      const { GeoSearchControl, OpenStreetMapProvider } = window.GeoSearch;
+      const provider = new OpenStreetMapProvider();
+
+      const searchControl1 = new GeoSearchControl({
+        provider: provider,
+        style: "bar",
+        searchLabel: "Search for a location",
+      });
+
+      const searchControl2 = new GeoSearchControl({
+        provider: provider,
+        style: "bar",
+        searchLabel: "Search for a location",
+      });
+
+      map1.addControl(searchControl1);
+      map2.addControl(searchControl2);
+
       // Add event handlers
+
       map1.on("zoomend", function () {
         syncZoom(map1.getZoom());
+        syncMaps();
       });
 
       map2.on("zoomend", function () {
         syncZoom(map2.getZoom());
+        syncMaps();
       });
 
       map1.on("moveend", syncMaps);
       map2.on("moveend", syncMaps);
 
-      map1.on("zoomend", syncMaps);
-      map2.on("zoomend", syncMaps);
+      map1.on("geosearch/showlocation", function (e) {
+        map1.setView(e.location, 13);
+      });
+
+      map2.on("geosearch/showlocation", function (e) {
+        map2.setView(e.location, 13);
+      });
     </script>
   </body>
 </html>
