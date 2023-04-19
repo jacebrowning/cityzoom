@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>City Zoom</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+    }
+    #map1 {
+      height: 100%;
+      width: 50%;
+      float: left;
+      box-sizing: border-box;
+      border: 10px solid white;
+      border-right-width: 5px;
+    }
+    #map2 {
+      height: 100%;
+      width: 50%;
+      float: left;
+      box-sizing: border-box;
+      border: 10px solid white;
+      border-left-width: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div id="map1"></div>
+  <div id="map2"></div>
+  <script>
+    function syncZoom(level) {
+      map1.setZoom(level);
+      map2.setZoom(level);
+    }
+
+    var grand_rapids_michigan = [42.9634, -85.6681];
+    var detroit_michigan = [42.3314, -83.0458];
+
+    var map1 = L.map('map1').setView(grand_rapids_michigan, 16);
+    var map2 = L.map('map2').setView(detroit_michigan, 16);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map1);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map2);
+
+    map1.on('zoomend', function() {
+      syncZoom(map1.getZoom());
+    });
+
+    map2.on('zoomend', function() {
+      syncZoom(map2.getZoom());
+    });
+  </script>
+</body>
+</html>
