@@ -59,25 +59,62 @@
         map2.setZoom(level);
       }
 
-      var grand_rapids_michigan = [42.9634, -85.6681];
-      var detroit_michigan = [42.3314, -83.0458];
+      function syncMaps() {
+        const center1 = map1.getCenter();
+        const center2 = map2.getCenter();
+        const z1 = map1.getZoom();
+        const z2 = map2.getZoom();
 
-      var map1 = L.map("map1").setView(grand_rapids_michigan, 13);
-      var map2 = L.map("map2", { gestureHandling: true }).setView(detroit_michigan, 13);
+        const params = new URLSearchParams({
+          lat1: center1.lat.toFixed(5),
+          lng1: center1.lng.toFixed(5),
+          lat2: center2.lat.toFixed(5),
+          lng2: center2.lng.toFixed(5),
+          z1: z1,
+          z2: z2,
+        });
+
+        history.pushState(null, "", "?" + params.toString());
+      }
+
+      // Get URL parameters
+      const urlParams = new URLSearchParams(window.location.search);
+
+      // Set initial center coordinates and zoom levels
+      const initialCenter1 =
+        urlParams.has("lat1") && urlParams.has("lng1")
+          ? [parseFloat(urlParams.get("lat1")), parseFloat(urlParams.get("lng1"))]
+          : [42.9634, -85.6681]; // Grand Rapids, MI
+
+      const initialCenter2 =
+        urlParams.has("lat2") && urlParams.has("lng2")
+          ? [parseFloat(urlParams.get("lat2")), parseFloat(urlParams.get("lng2"))]
+          : [42.3314, -83.0458]; // Detroit, MI
+
+      const initialZoom1 = urlParams.has("z1") ? parseInt(urlParams.get("z1")) : 13;
+      const initialZoom2 = urlParams.has("z2") ? parseInt(urlParams.get("z2")) : 13;
+
+      // Initialize the maps
+      var map1 = L.map("map1").setView(initialCenter1, initialZoom1);
+      var map2 = L.map("map2", { gestureHandling: true }).setView(
+        initialCenter2,
+        initialZoom2
+      );
 
       L.control.scale().addTo(map1);
       L.control.scale().addTo(map2);
 
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+          '<a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       }).addTo(map1);
 
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+          '<a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       }).addTo(map2);
 
+      // Add event handlers
       map1.on("zoomend", function () {
         syncZoom(map1.getZoom());
       });
@@ -85,6 +122,12 @@
       map2.on("zoomend", function () {
         syncZoom(map2.getZoom());
       });
+
+      map1.on("moveend", syncMaps);
+      map2.on("moveend", syncMaps);
+
+      map1.on("zoomend", syncMaps);
+      map2.on("zoomend", syncMaps);
     </script>
   </body>
 </html>
