@@ -75,9 +75,9 @@
 
         const params = new URLSearchParams({
           lat1: center1.lat.toFixed(5),
-          lng1: center1.lng.toFixed(5),
+          lon1: center1.lng.toFixed(5),
           lat2: center2.lat.toFixed(5),
-          lng2: center2.lng.toFixed(5),
+          lon2: center2.lng.toFixed(5),
           z1: z1,
           z2: z2,
         });
@@ -90,13 +90,13 @@
       const urlParams = new URLSearchParams(window.location.search);
 
       const initialCenter1 =
-        urlParams.has("lat1") && urlParams.has("lng1")
-          ? [parseFloat(urlParams.get("lat1")), parseFloat(urlParams.get("lng1"))]
+        urlParams.has("lat1") && urlParams.has("lon1")
+          ? [parseFloat(urlParams.get("lat1")), parseFloat(urlParams.get("lon1"))]
           : [42.9634, -85.6681]; // Grand Rapids, MI
 
       const initialCenter2 =
-        urlParams.has("lat2") && urlParams.has("lng2")
-          ? [parseFloat(urlParams.get("lat2")), parseFloat(urlParams.get("lng2"))]
+        urlParams.has("lat2") && urlParams.has("lon2")
+          ? [parseFloat(urlParams.get("lat2")), parseFloat(urlParams.get("lon2"))]
           : [42.3314, -83.0458]; // Detroit, MI
 
       const initialZoom1 = urlParams.has("z1") ? parseInt(urlParams.get("z1")) : 13;
