@@ -23,11 +23,12 @@
       html {
         height: 100%;
         margin: 0;
+        background: black;
       }
       #map1,
       #map2 {
         box-sizing: border-box;
-        border: 10px solid white;
+        border: 10px solid black;
       }
       /* Styles for screens with width greater than height (landscape) */
       @media (min-aspect-ratio: 1/1) {
@@ -35,13 +36,13 @@
           height: 100%;
           width: 50%;
           float: left;
-          border-right-width: 5px;
+          border-right-width: 0;
         }
         #map2 {
           height: 100%;
           width: 50%;
           float: left;
-          border-left-width: 5px;
+          border-left-width: 10px;
         }
       }
       /* Styles for screens with height greater than width (portrait) */
@@ -49,11 +50,12 @@
         #map1 {
           height: 50%;
           width: 100%;
-          border-bottom-width: 5px;
+          border-bottom-width: 0;
         }
         #map2 {
           height: 50%;
           width: 100%;
+          border-top-width: 10px;
         }
       }
     </style>
@@ -70,23 +72,20 @@
       function syncMaps() {
         const center1 = map1.getCenter();
         const center2 = map2.getCenter();
-        const z1 = map1.getZoom();
-        const z2 = map2.getZoom();
+        const zoom = map1.getZoom();
 
         const params = new URLSearchParams({
+          zoom: zoom,
           lat1: center1.lat.toFixed(5),
           lon1: center1.lng.toFixed(5),
           lat2: center2.lat.toFixed(5),
           lon2: center2.lng.toFixed(5),
-          z1: z1,
-          z2: z2,
         });
 
         history.pushState(null, "", "?" + params.toString());
       }
 
       // Get initial center coordinates and zoom levels
-
       const urlParams = new URLSearchParams(window.location.search);
 
       const initialCenter1 =
@@ -99,15 +98,13 @@
           ? [parseFloat(urlParams.get("lat2")), parseFloat(urlParams.get("lon2"))]
           : [42.3314, -83.0458]; // Detroit, MI
 
-      const initialZoom1 = urlParams.has("z1") ? parseInt(urlParams.get("z1")) : 13;
-      const initialZoom2 = urlParams.has("z2") ? parseInt(urlParams.get("z2")) : 13;
+      const initialZoom = urlParams.has("zoom") ? parseInt(urlParams.get("zoom")) : 13;
 
       // Initialize the maps
-
-      var map1 = L.map("map1").setView(initialCenter1, initialZoom1);
+      var map1 = L.map("map1").setView(initialCenter1, initialZoom);
       var map2 = L.map("map2", { gestureHandling: true }).setView(
         initialCenter2,
-        initialZoom2
+        initialZoom
       );
 
       L.control.scale().addTo(map1);

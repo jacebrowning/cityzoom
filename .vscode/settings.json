@@ -1,3 +1,10 @@
 {
-  "cSpell.words": ["geosearch", "moveend", "showlocation", "zoomend"]
+  "cSpell.words": [
+    "geosearch",
+    "moveend",
+    "showlocation",
+    "stylesheet",
+    "zoomend"
+  ],
+  "djlint.showInstallError": false
 }
