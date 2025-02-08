@@ -6,12 +6,6 @@
     <!-- Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <!-- Gestures -->
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet-gesture-handling@1.2.1/dist/leaflet-gesture-handling.min.css"
-    />
-    <script src="https://unpkg.com/leaflet-gesture-handling@1.2.1/dist/leaflet-gesture-handling.min.js"></script>
     <!-- Search -->
     <link
       rel="stylesheet"
@@ -86,6 +80,7 @@
       }
 
       // Get initial center coordinates and zoom levels
+
       const urlParams = new URLSearchParams(window.location.search);
 
       const initialCenter1 =
@@ -101,11 +96,9 @@
       const initialZoom = urlParams.has("zoom") ? parseInt(urlParams.get("zoom")) : 13;
 
       // Initialize the maps
+
       var map1 = L.map("map1").setView(initialCenter1, initialZoom);
-      var map2 = L.map("map2", { gestureHandling: true }).setView(
-        initialCenter2,
-        initialZoom
-      );
+      var map2 = L.map("map2").setView(initialCenter2, initialZoom);
 
       L.control.scale().addTo(map1);
       L.control.scale().addTo(map2);
@@ -142,14 +135,24 @@
 
       // Add event handlers
 
+      let isZooming = false;
+
       map1.on("zoomend", function () {
-        syncZoom(map1.getZoom());
-        syncMaps();
+        if (!isZooming) {
+          isZooming = true;
+          syncZoom(map1.getZoom());
+          syncMaps();
+          setTimeout(() => { isZooming = false; }, 100);
+        }
       });
 
       map2.on("zoomend", function () {
-        syncZoom(map2.getZoom());
-        syncMaps();
+        if (!isZooming) {
+          isZooming = true;
+          syncZoom(map2.getZoom());
+          syncMaps();
+          setTimeout(() => { isZooming = false; }, 100);
+        }
       });
 
       map1.on("moveend", syncMaps);
