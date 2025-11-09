@@ -1,3 +1,7 @@
+➡️ New location: https://github.com/citizenlabsgr/cityzoom
+
+---
+
 # City Zoom
 
 Compare two locations with synchronized zoom controls.
